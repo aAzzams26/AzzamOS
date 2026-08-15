@@ -15,7 +15,13 @@ function save(){localStorage.setItem('jonios-settings',JSON.stringify(settings))
 
 const apps={
  files:{title:'Files',html:`<h1>📁 Files</h1><div class="file">📄 Readme.txt</div><div class="file">🖼️ Wallpaper.png</div><div class="file">📦 Projects</div>`},
- browser:{title:'Browser',html:`<div class="browser"><h1>🌐 Browser</h1><p>Browser demo.</p><input id="url" placeholder="https://example.com"><button id="go">Go</button><div id="page" style="margin-top:25px"></div></div>`},
+ browser:{title:'Browser',html:`<div class="browser"><h1>🌐 Browser</h1>
+    <p>Masukkan alamat website. Kalau situs menolak iframe, gunakan tombol "Buka tab".</p>
+    <input id="url" placeholder="https://example.com">
+    <button id="go">Buka</button>
+    <button id="newtab">Buka tab</button>
+    <iframe id="webview" title="AzzamOS Browser" style="width:100%;height:260px;border:0;border-radius:10px;margin-top:18px;background:#fff"></iframe>
+    <div id="page" style="margin-top:10px"></div></div>`},
  settings:{title:'Settings',html:`<h1>⚙️ Settings</h1>
  <div class="settings-row"><label>Warna tema</label><input id="theme" type="color" value="${settings.theme}"></div>
  <div class="settings-row"><label>Wallpaper</label><select id="wallpaper"><option value="gradient">Gradient</option><option value="dark">Dark</option><option value="sunset">Sunset</option><option value="custom">Warna custom</option></select><input id="custom" type="color" value="#151b32" style="display:none;margin-left:10px"></div>
@@ -36,7 +42,13 @@ function openApp(name){
    blur.oninput=()=>{settings.blur=+blur.value;document.getElementById('blurval').textContent=blur.value;save()};
    document.getElementById('reset').onclick=()=>{settings={...defaults};save();openApp('settings')};
  }
- if(name==='browser')document.getElementById('go').onclick=()=>document.getElementById('page').textContent='Navigasi demo ke: '+(document.getElementById('url').value||'');
+ if(name==='browser'){
+   const urlInput=document.getElementById('url'), frame=document.getElementById('webview'), page=document.getElementById('page');
+   const normalize=()=>{let u=urlInput.value.trim(); if(u && !/^https?:\\/\\//i.test(u)) u='https://'+u; return u};
+   document.getElementById('go').onclick=()=>{const u=normalize(); if(!u){page.textContent='Masukkan alamat dulu.';return} frame.src=u; page.textContent='Mencoba membuka '+u};
+   document.getElementById('newtab').onclick=()=>{const u=normalize(); if(u) window.open(u,'_blank','noopener,noreferrer')};
+   urlInput.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('go').click()});
+ }
 }
 document.querySelectorAll('[data-app]').forEach(el=>el.addEventListener('click',()=>openApp(el.dataset.app)));
 document.getElementById('start').onclick=()=>startMenu.classList.toggle('hidden');
