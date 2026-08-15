@@ -1,7 +1,7 @@
 const desktop=document.getElementById("desktop"),win=document.getElementById("win"),content=document.getElementById("content"),title=document.getElementById("title"),start=document.getElementById("start"),taskbar=document.getElementById("taskbar"),taskApp=document.getElementById("taskApp");
 const defaults={color:"#3156a3",wallpaper:"gradient",task:58,blur:12};
 let cfg={...defaults};
-try{cfg={...defaults,...JSON.parse(localStorage.getItem("azzamos")||"{}")}catch(e){}
+try{cfg={...defaults,...JSON.parse(localStorage.getItem("azzamos")||"{}")}}catch(e){}
 
 function apply(){
  taskbar.style.height=cfg.task+"px";
