@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JoniOS Web</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="desktop">
+    <div class="icons">
+      <button class="desktop-icon" data-app="files"><span>📁</span><small>Files</small></button>
+      <button class="desktop-icon" data-app="browser"><span>🌐</span><small>Browser</small></button>
+      <button class="desktop-icon" data-app="settings"><span>⚙️</span><small>Settings</small></button>
+    </div>
+
+    <section id="window" class="window hidden">
+      <header class="window-bar">
+        <strong id="window-title">App</strong>
+        <div>
+          <button id="minimize">—</button>
+          <button id="close">×</button>
+        </div>
+      </header>
+      <div id="window-content" class="window-content"></div>
+    </section>
+
+    <nav id="start-menu" class="start-menu hidden">
+      <h2>JoniOS</h2>
+      <button data-app="files">📁 Files</button>
+      <button data-app="browser">🌐 Browser</button>
+      <button data-app="settings">⚙️ Settings</button>
+    </nav>
+
+    <footer class="taskbar">
+      <button id="start">◉</button>
+      <div id="task-app"></div>
+      <span id="clock"></span>
+    </footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
