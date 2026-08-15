@@ -1,43 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AzzamOS</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main id="desktop">
+<div id="desktop">
   <div class="icons">
-    <button class="desktop-icon" data-app="files"><span>📁</span><small>Files</small></button>
-    <button class="desktop-icon" data-app="browser"><span>🌐</span><small>Browser</small></button>
-    <button class="desktop-icon" data-app="settings"><span>⚙️</span><small>Settings</small></button>
+    <button data-app="files">📁<small>Files</small></button>
+    <button data-app="browser">🌐<small>Browser</small></button>
+    <button data-app="settings">⚙️<small>Settings</small></button>
   </div>
 
-  <section id="window" class="window hidden">
-    <header class="window-bar">
-      <strong id="window-title">App</strong>
-      <div>
-        <button id="minimize">—</button>
-        <button id="close">×</button>
-      </div>
-    </header>
-    <div id="window-content" class="window-content"></div>
-  </section>
+  <div id="win" class="window hidden">
+    <div class="bar"><b id="title">AzzamOS</b><span><button id="min">−</button><button id="close">×</button></span></div>
+    <div id="content"></div>
+  </div>
 
-  <nav id="start-menu" class="start-menu hidden">
+  <div id="start" class="start hidden">
     <h2>AzzamOS</h2>
     <button data-app="files">📁 Files</button>
     <button data-app="browser">🌐 Browser</button>
     <button data-app="settings">⚙️ Settings</button>
-  </nav>
+  </div>
 
-  <footer id="taskbar" class="taskbar">
-    <button id="start">◉</button>
-    <div id="task-app"></div>
+  <div id="taskbar">
+    <button id="startBtn">◉</button>
+    <span id="taskApp"></span>
     <span id="clock"></span>
-  </footer>
-</main>
+  </div>
+</div>
 <script src="script.js"></script>
 </body>
 </html>

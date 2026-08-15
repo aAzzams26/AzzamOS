@@ -1,58 +1,43 @@
-const win=document.getElementById('window'),title=document.getElementById('window-title'),content=document.getElementById('window-content'),startMenu=document.getElementById('start-menu'),taskbar=document.getElementById('taskbar'),taskApp=document.getElementById('task-app'),desktop=document.getElementById('desktop');
+const desktop=document.getElementById("desktop"),win=document.getElementById("win"),content=document.getElementById("content"),title=document.getElementById("title"),start=document.getElementById("start"),taskbar=document.getElementById("taskbar"),taskApp=document.getElementById("taskApp");
+const defaults={color:"#3156a3",wallpaper:"gradient",task:58,blur:12};
+let cfg={...defaults};
+try{cfg={...defaults,...JSON.parse(localStorage.getItem("azzamos")||"{}")}catch(e){}
 
-const defaults={theme:'#243a72',wallpaper:'gradient',taskbar:58,blur:15};
-let settings={...defaults,...JSON.parse(localStorage.getItem('jonios-settings')||'{}')};
-
-function applySettings(){
-  taskbar.style.height=settings.taskbar+'px';
-  taskbar.style.backdropFilter=`blur(${settings.blur}px)`;
-  if(settings.wallpaper==='gradient') desktop.style.background=`radial-gradient(circle at 20% 20%,${settings.theme},#101525 45%,#070912)`;
-  else if(settings.wallpaper==='dark') desktop.style.background='#08090d';
-  else if(settings.wallpaper==='sunset') desktop.style.background='linear-gradient(135deg,#5b2040,#c75c2c 48%,#17152e)';
-  else desktop.style.background=settings.wallpaper;
+function apply(){
+ taskbar.style.height=cfg.task+"px";
+ taskbar.style.backdropFilter="blur("+cfg.blur+"px)";
+ if(cfg.wallpaper==="gradient")desktop.style.background="radial-gradient(circle at 20% 20%,"+cfg.color+",#101525 48%,#070912)";
+ else if(cfg.wallpaper==="dark")desktop.style.background="#08090d";
+ else if(cfg.wallpaper==="sunset")desktop.style.background="linear-gradient(135deg,#5b2040,#c75c2c,#17152e)";
+ else desktop.style.background=cfg.wallpaper;
 }
-function save(){localStorage.setItem('jonios-settings',JSON.stringify(settings));applySettings()}
+function save(){localStorage.setItem("azzamos",JSON.stringify(cfg));apply()}
 
-const apps={
- files:{title:'Files',html:`<h1>📁 Files</h1><div class="file">📄 Readme.txt</div><div class="file">🖼️ Wallpaper.png</div><div class="file">📦 Projects</div>`},
- browser:{title:'Browser',html:`<div class="browser"><h1>🌐 Browser</h1>
-    <p>Masukkan alamat website. Kalau situs menolak iframe, gunakan tombol "Buka tab".</p>
-    <input id="url" placeholder="https://example.com">
-    <button id="go">Buka</button>
-    <button id="newtab">Buka tab</button>
-    <iframe id="webview" title="AzzamOS Browser" style="width:100%;height:260px;border:0;border-radius:10px;margin-top:18px;background:#fff"></iframe>
-    <div id="page" style="margin-top:10px"></div></div>`},
- settings:{title:'Settings',html:`<h1>⚙️ Settings</h1>
- <div class="settings-row"><label>Warna tema</label><input id="theme" type="color" value="${settings.theme}"></div>
- <div class="settings-row"><label>Wallpaper</label><select id="wallpaper"><option value="gradient">Gradient</option><option value="dark">Dark</option><option value="sunset">Sunset</option><option value="custom">Warna custom</option></select><input id="custom" type="color" value="#151b32" style="display:none;margin-left:10px"></div>
- <div class="settings-row"><label>Ukuran taskbar: <span id="taskval">${settings.taskbar}</span> px</label><input id="tasksize" type="range" min="45" max="90" value="${settings.taskbar}"></div>
- <div class="settings-row"><label>Blur taskbar: <span id="blurval">${settings.blur}</span> px</label><input id="blur" type="range" min="0" max="30" value="${settings.blur}"></div>
- <div class="settings-row"><button id="reset">Reset Settings</button></div>`}
+const app={
+files:{title:"Files",html:"<h1>📁 Files</h1><div class='file'>📄 Readme.txt</div><div class='file'>🖼️ Wallpaper.png</div><div class='file'>📦 Projects</div>"},
+browser:{title:"Browser",html:"<div class='browser'><h1>🌐 Browser</h1><p>Masukkan alamat website.</p><input id='url' placeholder='https://example.com'><button id='go'>Buka</button> <button id='tab'>Tab baru</button><iframe id='frame' title='Browser'></iframe><p id='msg'></p></div>"},
+settings:{title:"Settings",html:"<h1>⚙️ Settings</h1><div class='row'><label>Warna tema</label><input id='color' type='color'></div><div class='row'><label>Wallpaper</label><select id='wall'><option value='gradient'>Gradient</option><option value='dark'>Dark</option><option value='sunset'>Sunset</option><option value='custom'>Custom</option></select><input id='custom' type='color' style='display:none'></div><div class='row'><label>Ukuran taskbar: <span id='tv'></span> px</label><input id='task' type='range' min='45' max='90'></div><div class='row'><label>Blur: <span id='bv'></span> px</label><input id='blur' type='range' min='0' max='30'></div><div class='row'><button id='reset'>Reset</button></div>"}
 };
 
 function openApp(name){
- const app=apps[name]; title.textContent=app.title; content.innerHTML=app.html; win.classList.remove('hidden'); startMenu.classList.add('hidden'); taskApp.textContent=app.title;
- if(name==='settings'){
-   const theme=document.getElementById('theme'),wall=document.getElementById('wallpaper'),custom=document.getElementById('custom'),size=document.getElementById('tasksize'),blur=document.getElementById('blur');
-   wall.value=['gradient','dark','sunset'].includes(settings.wallpaper)?settings.wallpaper:'custom'; custom.style.display=wall.value==='custom'?'inline-block':'none';
-   theme.oninput=()=>{settings.theme=theme.value;save()};
-   wall.onchange=()=>{settings.wallpaper=wall.value;custom.style.display=wall.value==='custom'?'inline-block':'none';save()};
-   custom.oninput=()=>{settings.wallpaper=custom.value;save()};
-   size.oninput=()=>{settings.taskbar=+size.value;document.getElementById('taskval').textContent=size.value;save()};
-   blur.oninput=()=>{settings.blur=+blur.value;document.getElementById('blurval').textContent=blur.value;save()};
-   document.getElementById('reset').onclick=()=>{settings={...defaults};save();openApp('settings')};
+ const a=app[name]; title.textContent=a.title;content.innerHTML=a.html;win.classList.remove("hidden");start.classList.add("hidden");taskApp.textContent=a.title;
+ if(name==="settings"){
+  const c=document.getElementById("color"),w=document.getElementById("wall"),custom=document.getElementById("custom"),t=document.getElementById("task"),b=document.getElementById("blur");
+  c.value=cfg.color;w.value=["gradient","dark","sunset"].includes(cfg.wallpaper)?cfg.wallpaper:"custom";custom.value=cfg.wallpaper.startsWith("#")?cfg.wallpaper:"#20283f";custom.style.display=w.value==="custom"?"inline":"none";t.value=cfg.task;b.value=cfg.blur;
+  document.getElementById("tv").textContent=cfg.task;document.getElementById("bv").textContent=cfg.blur;
+  c.oninput=()=>{cfg.color=c.value;save()};w.onchange=()=>{cfg.wallpaper=w.value;custom.style.display=w.value==="custom"?"inline":"none";save()};custom.oninput=()=>{cfg.wallpaper=custom.value;save()};t.oninput=()=>{cfg.task=+t.value;document.getElementById("tv").textContent=t.value;save()};b.oninput=()=>{cfg.blur=+b.value;document.getElementById("bv").textContent=b.value;save()};document.getElementById("reset").onclick=()=>{cfg={...defaults};save();openApp("settings")};
  }
- if(name==='browser'){
-   const urlInput=document.getElementById('url'), frame=document.getElementById('webview'), page=document.getElementById('page');
-   const normalize=()=>{let u=urlInput.value.trim(); if(u && !/^https?:\\/\\//i.test(u)) u='https://'+u; return u};
-   document.getElementById('go').onclick=()=>{const u=normalize(); if(!u){page.textContent='Masukkan alamat dulu.';return} frame.src=u; page.textContent='Mencoba membuka '+u};
-   document.getElementById('newtab').onclick=()=>{const u=normalize(); if(u) window.open(u,'_blank','noopener,noreferrer')};
-   urlInput.addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('go').click()});
+ if(name==="browser"){
+  const input=document.getElementById("url"),frame=document.getElementById("frame"),msg=document.getElementById("msg");
+  const getUrl=()=>{let u=input.value.trim();if(u&&!/^https?:\/\//i.test(u))u="https://"+u;return u};
+  document.getElementById("go").onclick=()=>{const u=getUrl();if(!u){msg.textContent="Masukkan URL.";return}frame.src=u;msg.textContent="Membuka "+u};
+  document.getElementById("tab").onclick=()=>{const u=getUrl();if(u)window.open(u,"_blank","noopener,noreferrer")};
+  input.onkeydown=e=>{if(e.key==="Enter")document.getElementById("go").click()};
  }
 }
-document.querySelectorAll('[data-app]').forEach(el=>el.addEventListener('click',()=>openApp(el.dataset.app)));
-document.getElementById('start').onclick=()=>startMenu.classList.toggle('hidden');
-document.getElementById('close').onclick=()=>{win.classList.add('hidden');taskApp.textContent=''};
-document.getElementById('minimize').onclick=()=>win.classList.add('hidden');
-function clock(){document.getElementById('clock').textContent=new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}
-applySettings();clock();setInterval(clock,1000);
+document.querySelectorAll("[data-app]").forEach(x=>x.onclick=()=>openApp(x.dataset.app));
+document.getElementById("startBtn").onclick=()=>start.classList.toggle("hidden");
+document.getElementById("close").onclick=()=>{win.classList.add("hidden");taskApp.textContent=""};
+document.getElementById("min").onclick=()=>win.classList.add("hidden");
+function clock(){document.getElementById("clock").textContent=new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"})}
+apply();clock();setInterval(clock,1000);
